@@ -4,7 +4,7 @@ __author__ = 'Will Brennan'
 
 import argparse
 import logging
-
+import numpy as np
 import cv2
 
 import skin_detector
@@ -31,11 +31,24 @@ if __name__ == '__main__':
         for image_path in skin_detector.find_images(image_arg):
             logging.info("loading image from {0}".format(image_path))
             img_col = cv2.imread(image_path, 1)
-
+            img_copy = img_col.copy()
+            
             img_msk = skin_detector.process(img_col)
+
+            skin=cv2.blur(img_copy, (27, 27))
+            skin_extract=cv2.bitwise_and(skin, skin, mask=img_msk)
+            
+
+            mask_back=cv2.bitwise_not(img_msk)
+            back=cv2.bitwise_and(img_col, img_col, mask=mask_back)
+
+            final = cv2.add(back, skin_extract)
 
             if args.display:
                 skin_detector.scripts.display('img_col', img_col)
                 skin_detector.scripts.display('img_msk', img_msk)
-                skin_detector.scripts.display('img_skn', cv2.bitwise_and(img_col, img_col, mask=img_msk))
+                skin_detector.scripts.display('skin_extract', skin_extract)
+                #skin_detector.scripts.display('mask_back', mask_back)
+                # skin_detector.scripts.display('back', back)
+                skin_detector.scripts.display('final', final)
                 cv2.waitKey(0)

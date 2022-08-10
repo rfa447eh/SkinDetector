@@ -125,7 +125,7 @@ def closing(mask):
     return mask
 
 
-def process(img, thresh=0.5, debug=False):
+def process(img, thresh=0.55, debug=False):
     assert isinstance(img, numpy.ndarray), 'image must be a numpy array'
     assert img.ndim == 3, 'skin detection can only work on color images'
     logger.debug("processing image of shape {0}".format(img.shape))
