@@ -61,8 +61,11 @@ def get_ycrcb_mask(img, debug=False):
     assert img.ndim == 3, 'skin detection can only work on color images'
     logger.debug('getting ycrcb mask')
 
-    lower_thresh = numpy.array([90, 100, 130], dtype=numpy.uint8)
-    upper_thresh = numpy.array([230, 120, 180], dtype=numpy.uint8)
+    # lower_thresh = numpy.array([60, 80, 150], dtype=numpy.uint8)
+    lower_thresh = numpy.array([60, 80, 152], dtype=numpy.uint8)
+    upper_thresh = numpy.array([210, 160, 190], dtype=numpy.uint8)
+
+    # upper_thresh = numpy.array([210, 140, 190], dtype=numpy.uint8)
 
     img_ycrcb = cv2.cvtColor(img, cv2.COLOR_RGB2YCR_CB)
     msk_ycrcb = cv2.inRange(img_ycrcb, lower_thresh, upper_thresh)
@@ -83,7 +86,7 @@ def grab_cut_mask(img_col, mask, debug=False):
     assert img_col.ndim == 3, 'skin detection can only work on color images'
     assert mask.ndim == 2, 'mask must be 2D'
 
-    kernel = numpy.ones((50, 50), numpy.float32) / (50 * 50)
+    kernel = numpy.ones((40, 40), numpy.float32) / (40 * 40)
     dst = cv2.filter2D(mask, -1, kernel)
     dst[dst != 0] = 255
     free = numpy.array(cv2.bitwise_not(dst), dtype=numpy.uint8)
@@ -125,7 +128,7 @@ def closing(mask):
     return mask
 
 
-def process(img, thresh=0.55, debug=False):
+def process(img, thresh=0.5, debug=False):
     assert isinstance(img, numpy.ndarray), 'image must be a numpy array'
     assert img.ndim == 3, 'skin detection can only work on color images'
     logger.debug("processing image of shape {0}".format(img.shape))
